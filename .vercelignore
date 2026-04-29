@@ -1,0 +1,5 @@
+.git
+.edge-profile*
+node_modules
+*.log
+mrv-control-map-*.png
