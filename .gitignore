@@ -1,0 +1,4 @@
+data/telemetry.json
+browser-check-*.png
+server.log
+server.err.log

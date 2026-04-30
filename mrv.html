@@ -3,13 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MRV Report | MRV Control Map</title>
+    <title>MRV Report | 논토양 메탄 MRV 관제센터</title>
+    <link rel="icon" href="data:," />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
     <header class="topbar">
       <div class="topbar-main">
-        <a class="brand" href="index.html" aria-label="MRV Control Map home">
+        <a class="brand" href="index.html" aria-label="MRV 관제센터 홈">
           <span class="brand-icon" aria-hidden="true">
             <svg viewBox="0 0 40 40" role="img">
               <rect width="40" height="40" rx="10"></rect>
@@ -19,12 +20,12 @@
             </svg>
           </span>
           <span>
-            <strong>전북 권역 MRV 통합 관제센터</strong>
-            <small>MRV Control Map</small>
+            <strong>논토양 메탄 MRV 관제센터</strong>
+            <small>LoRa Water Level · CH4 Reduction</small>
           </span>
         </a>
 
-        <nav class="nav" aria-label="Main navigation">
+        <nav class="nav" aria-label="주요 화면">
           <a href="index.html">Map</a>
           <a href="sensor.html">Sensor Data</a>
           <a href="alerts.html">Alerts</a>
@@ -36,7 +37,7 @@
     <main class="page-shell">
       <section class="page-heading compact">
         <p class="eyebrow">MRV Report</p>
-        <h1>검증 원장과 센서 데이터를 기반으로 월간 MRV 보고서를 자동 작성합니다</h1>
+        <h1>서버에 저장된 LoRa 측정값을 기반으로 권역별 월간 MRV 보고서를 자동 작성합니다.</h1>
       </section>
 
       <section class="report-builder">
@@ -46,22 +47,17 @@
               <p class="eyebrow">Auto Writer</p>
               <h2>보고서 자동 작성</h2>
             </div>
-            <span class="pill safe" data-report-state>자동 작성 완료</span>
+            <span class="pill safe" data-report-state>자동 작성 대기</span>
           </div>
 
           <div class="report-form">
             <label>
               <span>관제 권역</span>
-              <select data-report-region>
-                <option value="iksan">전북 1권역 관제 센터 - 익산</option>
-                <option value="gunsan">전북 3권역 관제 센터 - 군산</option>
-                <option value="wanju">전북 7권역 관제 센터 - 완주</option>
-                <option value="buan">전북 10권역 관제 센터 - 부안</option>
-              </select>
+              <select data-report-region></select>
             </label>
             <label>
               <span>보고 월</span>
-              <input data-report-month type="month" value="2026-05" />
+              <input data-report-month type="month" value="2026-04" />
             </label>
           </div>
 
@@ -74,20 +70,20 @@
 
         <section class="report-grid auto-report-metrics" aria-label="MRV report summary">
           <article class="report-tile">
-            <p>누적 탄소 감축량</p>
-            <strong data-report-carbon>1,258.59 tCO₂eq</strong>
+            <p>연환산 감축량</p>
+            <strong data-report-carbon>0.00 tCO2eq</strong>
           </article>
           <article class="report-tile">
-            <p>전환 배출권</p>
-            <strong data-report-credit>1,258 KOC</strong>
+            <p>잠정 배출권</p>
+            <strong data-report-credit>0 KOC</strong>
           </article>
           <article class="report-tile">
             <p>자동 검증률</p>
-            <strong data-report-verify>98.7%</strong>
+            <strong data-report-verify>0.0%</strong>
           </article>
           <article class="report-tile">
             <p>보고서 상태</p>
-            <strong data-report-ready>제출 가능</strong>
+            <strong data-report-ready>작성 대기</strong>
           </article>
         </section>
       </section>
@@ -97,9 +93,9 @@
           <div class="report-paper-head">
             <div>
               <p class="eyebrow">Generated Report</p>
-              <h2 data-report-title>전북 1권역 관제 센터 MRV 월간 보고서</h2>
+              <h2 data-report-title>MRV 월간 보고서</h2>
             </div>
-            <span data-report-created>작성 중</span>
+            <span data-report-created>작성 대기</span>
           </div>
 
           <div class="report-body">
@@ -109,7 +105,7 @@
             <h3>2. 측정 및 검증 결과</h3>
             <ul data-report-findings></ul>
 
-            <h3>3. 원장 기록 및 제출 의견</h3>
+            <h3>3. 저장 원장 및 제출 의견</h3>
             <p data-report-ledger></p>
           </div>
         </article>
@@ -120,18 +116,18 @@
               <p class="eyebrow">Readiness</p>
               <h2>제출 준비도</h2>
             </div>
-            <span class="pill safe">검증 완료</span>
+            <span class="pill safe">자동 계산</span>
           </div>
           <div class="progress-stack">
             <div>
               <span>센서 데이터 수집</span>
-              <strong data-progress-sensor>99%</strong>
-              <i data-progress-sensor-bar style="--value:99%"></i>
+              <strong data-progress-sensor>0%</strong>
+              <i data-progress-sensor-bar style="--value:0%"></i>
             </div>
             <div>
               <span>자동 검증 통과</span>
-              <strong data-progress-verify>98%</strong>
-              <i data-progress-verify-bar style="--value:98%"></i>
+              <strong data-progress-verify>0%</strong>
+              <i data-progress-verify-bar style="--value:0%"></i>
             </div>
             <div>
               <span>보고서 작성</span>
@@ -143,6 +139,8 @@
       </section>
     </main>
 
+    <script src="assets/mrv-model.js"></script>
+    <script src="assets/mrv-live.js"></script>
     <script src="assets/report.js"></script>
   </body>
 </html>

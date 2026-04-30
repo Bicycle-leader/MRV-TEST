@@ -3,13 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MRV Control Map</title>
+    <title>논토양 메탄 MRV 관제센터</title>
+    <link rel="icon" href="data:," />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body class="map-page">
     <header class="topbar">
       <div class="topbar-main">
-        <a class="brand" href="index.html" aria-label="MRV Control Map home">
+        <a class="brand" href="index.html" aria-label="MRV 관제센터 홈">
           <span class="brand-icon" aria-hidden="true">
             <svg viewBox="0 0 40 40" role="img">
               <rect width="40" height="40" rx="10"></rect>
@@ -19,34 +20,34 @@
             </svg>
           </span>
           <span>
-            <strong>전북 권역 MRV 통합 관제센터</strong>
-            <small>MRV Control Map</small>
+            <strong>논토양 메탄 MRV 관제센터</strong>
+            <small>LoRa Water Level · CH4 Reduction</small>
           </span>
         </a>
 
-        <div class="telemetry-strip" aria-label="측정 및 관제 동적 상태">
+        <div class="telemetry-strip" aria-label="실시간 측정 및 관제 상태">
           <div class="telemetry-tabs">
             <span class="telemetry-tab measure">
               <span>측정</span>
               <strong data-measure-point>익산</strong>
-              <em data-measure-state>측정 중</em>
+              <em data-measure-state>수신 대기</em>
             </span>
             <span class="telemetry-flow" aria-hidden="true"><i></i><i></i><i></i></span>
             <span class="telemetry-tab control">
               <span>관제</span>
               <strong data-control-point>전주</strong>
-              <em data-control-state>수신 정상</em>
+              <em data-control-state>서버 저장 정상</em>
             </span>
           </div>
           <div class="live-measurement" aria-live="polite">
             <span class="live-dot" aria-hidden="true"></span>
-            <b data-live-reading>전력 42.4 kWh · 가스 11.7 m³</b>
-            <small data-live-reduction>감축 +0.12 tCO₂eq</small>
+            <b data-live-reading>수위 데이터 수신 중</b>
+            <small data-live-reduction>연환산 계산 중</small>
           </div>
         </div>
 
         <div class="topbar-actions">
-          <nav class="nav" aria-label="Main navigation">
+          <nav class="nav" aria-label="주요 화면">
             <a class="active" href="index.html">Map</a>
             <a href="sensor.html">Sensor Data</a>
             <a href="alerts.html">Alerts</a>
@@ -57,59 +58,48 @@
     </header>
 
     <main class="control-layout" data-panel-state="open">
-      <section class="map-workspace" aria-label="Daum Kakao map workspace">
-        <div id="kakao-map" class="kakao-map" aria-label="다음지도 기반 MRV 관제 지도"></div>
+      <section class="map-workspace" aria-label="지도 기반 MRV 관제">
+        <div id="kakao-map" class="kakao-map" aria-label="Kakao 지도 기반 논토양 MRV 관제 지도"></div>
 
         <div class="map-fallback" hidden>
           <strong>지도를 불러오지 못했습니다</strong>
-          <p>Kakao Developers에서 배포 도메인과 localhost가 JavaScript 키 허용 도메인에 등록되어 있는지 확인해 주세요.</p>
+          <p>Kakao JavaScript 키의 허용 도메인에 현재 주소가 등록되어 있는지 확인하세요. 지도 없이도 좌측 패널의 실시간 데이터는 계속 갱신됩니다.</p>
         </div>
 
         <div class="selected-node" aria-live="polite">
           <p class="eyebrow">Selected Node</p>
-          <strong data-selected-name>IK-001</strong>
-          <span data-selected-detail>익산 제1산단 | 자동 검증됨 | +0.11 tCO₂eq</span>
+          <strong data-selected-name>수신 대기</strong>
+          <span data-selected-detail>LoRa 노드의 최신 측정값을 기다리고 있습니다.</span>
         </div>
       </section>
 
-      <aside class="control-panel" aria-label="MRV control panel">
+      <aside class="control-panel" aria-label="MRV 관제 패널">
         <div class="panel-top">
           <div>
             <p class="eyebrow">Control Center</p>
-            <h1 data-region-title>전북 1권역 관제 센터</h1>
+            <h1 data-region-title>전북 1권역 MRV 관제센터</h1>
           </div>
-          <button class="panel-toggle" type="button" aria-expanded="true" aria-label="좌측 패널 접기">
+          <button class="panel-toggle" type="button" aria-expanded="true" aria-label="왼쪽 패널 접기">
             <span></span>
           </button>
         </div>
 
         <div class="panel-content">
-          <section class="region-selector" aria-label="권역별 관제 센터 선택">
+          <section class="region-selector" aria-label="권역별 관제센터 선택">
             <div class="section-heading compact">
               <div>
                 <p class="eyebrow">Regions</p>
-                <h2>관제 센터 선택</h2>
+                <h2>관제 권역 선택</h2>
               </div>
-              <span>10개 권역</span>
+              <span data-connection-state>서버 연결</span>
             </div>
             <label class="region-select-wrap">
               <span>권역 선택</span>
-              <select class="region-select" data-region-select aria-label="권역별 관제 센터 선택">
-                <option value="region-1">전북 1권역 관제 센터 - 익산</option>
-                <option value="region-2">전북 2권역 관제 센터 - 전주</option>
-                <option value="region-3">전북 3권역 관제 센터 - 군산</option>
-                <option value="region-4">전북 4권역 관제 센터 - 정읍</option>
-                <option value="region-5">전북 5권역 관제 센터 - 남원</option>
-                <option value="region-6">전북 6권역 관제 센터 - 김제</option>
-                <option value="region-7">전북 7권역 관제 센터 - 완주</option>
-                <option value="region-8">전북 8권역 관제 센터 - 진안</option>
-                <option value="region-9">전북 9권역 관제 센터 - 고창</option>
-                <option value="region-10">전북 10권역 관제 센터 - 부안</option>
-              </select>
+              <select class="region-select" data-region-select aria-label="권역별 관제센터 선택"></select>
             </label>
             <div class="region-detail-card" aria-live="polite">
               <p class="eyebrow">Selected Center Data</p>
-              <strong data-region-detail-title>전북 1권역 관제 센터</strong>
+              <strong data-region-detail-title>전북 1권역 MRV 관제센터</strong>
               <dl>
                 <div>
                   <dt>측정 권역</dt>
@@ -117,29 +107,29 @@
                 </div>
                 <div>
                   <dt>측정 거점</dt>
-                  <dd data-region-detail-location>익산 제1산단</dd>
+                  <dd data-region-detail-location>익산 왕궁 논단지</dd>
                 </div>
                 <div>
-                  <dt>센서 노드</dt>
-                  <dd data-region-detail-hardware>4 / 4 개소</dd>
+                  <dt>LoRa 노드</dt>
+                  <dd data-region-detail-hardware>0 / 4 개소</dd>
                 </div>
                 <div>
-                  <dt>검증 원장</dt>
-                  <dd data-region-detail-code>IK 계열 자동 검증</dd>
+                  <dt>검증 체계</dt>
+                  <dd data-region-detail-code>IK 계열 LoRa MRV</dd>
                 </div>
               </dl>
             </div>
           </section>
 
-          <section class="carbon-grid" aria-label="MRV carbon summary">
+          <section class="carbon-grid" aria-label="MRV 탄소 요약">
             <article class="carbon-card primary live-carbon">
-              <span>누적 탄소 감축량</span>
-              <strong><span data-carbon-total>1,258.59</span><small>tCO₂eq</small></strong>
+              <span>연환산 메탄 감축량</span>
+              <strong><span data-carbon-total>0.00</span><small>tCO2eq</small></strong>
               <div class="carbon-change">
-                <span>실시간 변화량</span>
-                <b data-carbon-delta>+2.43 tCO₂eq</b>
+                <span>최신 일 감축량</span>
+                <b data-carbon-delta>일 0.000 tCO2eq</b>
               </div>
-              <div class="carbon-trend" aria-label="탄소 감축량 변화 추이">
+              <div class="carbon-trend" aria-label="감축량 변화 추이">
                 <i data-trend-bar style="--h:42%"></i>
                 <i data-trend-bar style="--h:54%"></i>
                 <i data-trend-bar style="--h:47%"></i>
@@ -149,27 +139,39 @@
                 <i data-trend-bar style="--h:78%"></i>
                 <i data-trend-bar style="--h:84%"></i>
               </div>
-              <em data-carbon-baseline>+12.5% 전년 베이스라인 대비</em>
+              <em data-carbon-baseline>CH4 GWP100 계수 적용</em>
             </article>
             <article class="carbon-card">
-              <span>전환된 탄소 배출권</span>
-              <strong><span data-credit-total>1,258</span><small>KOC</small></strong>
-              <em>검증 완료 (Verified)</em>
+              <span>잠정 배출권</span>
+              <strong><span data-credit-total>0</span><small>KOC</small></strong>
+              <em>1 KOC = 1 tCO2eq 기준</em>
             </article>
             <article class="carbon-card">
-              <span>하드웨어 가동 상태</span>
-              <strong><span data-hardware-status>4 / 4</span><small>개소</small></strong>
-              <em data-sync-time>마지막 동기화: 오후 9:56:24</em>
+              <span>하드웨어 수신 상태</span>
+              <strong><span data-hardware-status>0 / 0</span><small>개소</small></strong>
+              <em data-sync-time>마지막 수신 대기</em>
             </article>
+          </section>
+
+          <section class="ledger-card api-card" aria-label="LoRa 서버 연동 정보">
+            <div class="section-heading ledger-heading">
+              <div>
+                <p class="eyebrow">LoRa Ingest</p>
+                <h2>게이트웨이 수신 API</h2>
+              </div>
+              <span>POST /api/telemetry</span>
+            </div>
+            <p class="api-note">LoRaWAN 게이트웨이 또는 중계 서버에서 아래 JSON 형태로 전송하면 서버가 저장하고 모든 화면이 즉시 갱신됩니다.</p>
+            <pre class="code-sample"><code data-api-sample>{}</code></pre>
           </section>
 
           <section class="ledger-card" aria-label="MRV 실시간 검증 원장">
             <div class="section-heading ledger-heading">
               <div>
                 <p class="eyebrow">Ledger</p>
-                <h2>MRV 실시간 검증 원장</h2>
+                <h2>실시간 검증 원장</h2>
               </div>
-              <span>블록체인 해시 무결성 확인됨</span>
+              <span>서버 저장 · 자동 검증</span>
             </div>
 
             <div class="ledger-table" role="table" aria-label="MRV realtime ledger">
@@ -177,8 +179,8 @@
                 <span role="columnheader">시간</span>
                 <span role="columnheader">노드</span>
                 <span role="columnheader">측정 데이터</span>
-                <span role="columnheader">감축 산정량</span>
-                <span role="columnheader">검증 상태</span>
+                <span role="columnheader">감축 산정</span>
+                <span role="columnheader">상태</span>
               </div>
               <div data-ledger-body></div>
             </div>
@@ -187,6 +189,8 @@
       </aside>
     </main>
 
+    <script src="assets/mrv-model.js"></script>
+    <script src="assets/mrv-live.js"></script>
     <script src="assets/app.js"></script>
   </body>
 </html>

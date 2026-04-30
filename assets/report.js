@@ -1,50 +1,5 @@
-const reportData = {
-  iksan: {
-    title: "전북 1권역 관제 센터",
-    location: "익산 제1산단",
-    code: "IK",
-    carbon: 1258.59,
-    credit: 1258,
-    verify: 98.7,
-    nodes: 24,
-    alerts: 1,
-    ledger: "2026-04-30 00:18 기준 5개 검증 원장이 블록체인 해시로 확정되었습니다.",
-  },
-  gunsan: {
-    title: "전북 3권역 관제 센터",
-    location: "군산 국가산단",
-    code: "GS",
-    carbon: 1422.91,
-    credit: 1422,
-    verify: 99.1,
-    nodes: 26,
-    alerts: 0,
-    ledger: "군산 권역 측정값은 원장 지연 없이 자동 검증 완료 상태입니다.",
-  },
-  wanju: {
-    title: "전북 7권역 관제 센터",
-    location: "완주 수소산업 거점",
-    code: "WJ",
-    carbon: 1188.04,
-    credit: 1188,
-    verify: 97.9,
-    nodes: 18,
-    alerts: 1,
-    ledger: "완주 권역은 일부 장비 점검 알림을 제외하고 제출 기준을 충족합니다.",
-  },
-  buan: {
-    title: "전북 10권역 관제 센터",
-    location: "부안 재생에너지 실증단지",
-    code: "BA",
-    carbon: 1034.51,
-    credit: 1034,
-    verify: 98.2,
-    nodes: 20,
-    alerts: 1,
-    ledger: "부안 권역은 통신 지연 재시도 후 원장 기록 무결성이 확인되었습니다.",
-  },
-};
-
+const Model = window.MRVModel;
+const Live = window.MRVLive;
 const formatter = new Intl.NumberFormat("ko-KR", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
@@ -70,38 +25,48 @@ const progressSensorBar = document.querySelector("[data-progress-sensor-bar]");
 const progressVerify = document.querySelector("[data-progress-verify]");
 const progressVerifyBar = document.querySelector("[data-progress-verify-bar]");
 
+let currentSnapshot;
+
 function getMonthLabel(value) {
-  const [year, month] = value.split("-");
+  const [year, month] = (value || "2026-05").split("-");
   return `${year}년 ${Number(month)}월`;
 }
 
-function createReportText(data, month) {
+function regionSummary(snapshot, slug) {
+  return snapshot?.summary?.regions?.find((item) => item.slug === slug) || snapshot?.summary?.regions?.[0];
+}
+
+function latestForRegion(snapshot, regionId) {
+  return (snapshot?.latest || []).filter((item) => item.regionId === regionId);
+}
+
+function createReportText(summary, latest, month) {
   return [
-    `${data.title} MRV 월간 보고서`,
+    `${summary.title} MRV 월간 보고서`,
     `보고 월: ${getMonthLabel(month)}`,
-    `대상 권역: ${data.location}`,
-    `누적 탄소 감축량: ${formatter.format(data.carbon)} tCO2eq`,
-    `전환 배출권: ${data.credit.toLocaleString("ko-KR")} KOC`,
-    `자동 검증률: ${data.verify.toFixed(1)}%`,
-    "",
-    "보고 개요",
-    `${data.location}의 ${data.nodes}개 센서 노드는 전력 및 가스 사용량을 자동 수집하고, MRV 산정 로직을 통해 월간 감축량을 검증했습니다.`,
+    `대상 구역: ${summary.location}`,
+    `측정 면적: ${summary.areaHa} ha`,
+    `연환산 메탄 감축량: ${formatter.format(summary.annualReductionTco2e)} tCO2eq`,
+    `잠정 배출권: ${summary.creditEstimate.toLocaleString("ko-KR")} KOC`,
+    `자동 검증률: ${summary.verificationRate.toFixed(1)}%`,
     "",
     "측정 및 검증 결과",
-    `- 센서 노드 ${data.nodes}개소가 정상 수집 상태입니다.`,
-    `- 누적 감축량 ${formatter.format(data.carbon)} tCO2eq가 산정되었습니다.`,
-    `- ${data.credit.toLocaleString("ko-KR")} KOC 전환 가능 물량이 확인되었습니다.`,
-    `- 미해결 알림은 ${data.alerts}건이며 제출 영향은 낮음으로 판단됩니다.`,
+    ...latest.map(
+      (item) =>
+        `- ${item.nodeId}: 수위 ${item.waterLevelCm} cm, CH4 ${item.methaneFluxMgM2Hr} mg/m2/h, ${item.annualReductionTco2e} tCO2eq/년, ${item.verification}`
+    ),
     "",
-    "원장 기록 및 제출 의견",
-    data.ledger,
+    "제출 의견",
+    `LoRa 수위 데이터와 선택 입력된 메탄 플럭스 값을 기반으로 산정했습니다. 배출권 제출 전에는 적용 방법론의 기준 배출계수, 보정계수, 검증기관의 품질 기준으로 최종 확정해야 합니다.`,
   ].join("\n");
 }
 
 function renderReport() {
-  const data = reportData[regionSelect.value];
+  if (!currentSnapshot) return;
+  const summary = regionSummary(currentSnapshot, regionSelect.value);
+  const latest = latestForRegion(currentSnapshot, summary.regionId);
   const month = monthInput.value || "2026-05";
-  const ready = data.verify >= 98 && data.alerts <= 1;
+  const ready = summary.verificationRate >= 95 && latest.length === summary.nodeCount;
   const created = new Date().toLocaleString("ko-KR", {
     year: "numeric",
     month: "numeric",
@@ -110,51 +75,65 @@ function renderReport() {
     minute: "2-digit",
   });
 
-  reportTitle.textContent = `${data.title} MRV 월간 보고서`;
+  reportTitle.textContent = `${summary.title} MRV 월간 보고서`;
   reportCreated.textContent = `자동 작성: ${created}`;
-  reportCarbon.textContent = `${formatter.format(data.carbon)} tCO₂eq`;
-  reportCredit.textContent = `${data.credit.toLocaleString("ko-KR")} KOC`;
-  reportVerify.textContent = `${data.verify.toFixed(1)}%`;
+  reportCarbon.textContent = `${formatter.format(summary.annualReductionTco2e)} tCO2eq`;
+  reportCredit.textContent = `${summary.creditEstimate.toLocaleString("ko-KR")} KOC`;
+  reportVerify.textContent = `${summary.verificationRate.toFixed(1)}%`;
   reportReady.textContent = ready ? "제출 가능" : "검토 필요";
   stateBadge.textContent = ready ? "자동 작성 완료" : "검토 필요";
   stateBadge.classList.toggle("warn", !ready);
   stateBadge.classList.toggle("safe", ready);
 
-  reportOverview.textContent = `${getMonthLabel(month)} 기준 ${data.location}의 ${data.nodes}개 센서 노드가 수집한 전력·가스 측정 데이터를 MRV 산정 로직과 검증 원장에 반영했습니다.`;
+  reportOverview.textContent = `${getMonthLabel(month)} 기준 ${summary.location}의 LoRa 수위 노드 ${summary.activeNodes}/${summary.nodeCount}개가 서버에 저장된 최신 값을 제공했습니다. 산정식은 수위 기반 물관리 계수와 선택 입력된 CH4 플럭스 값을 사용해 일 감축량을 계산하고 연환산했습니다.`;
   reportFindings.innerHTML = [
-    `누적 탄소 감축량 ${formatter.format(data.carbon)} tCO₂eq 산정`,
-    `탄소 배출권 ${data.credit.toLocaleString("ko-KR")} KOC 전환 가능`,
-    `자동 검증률 ${data.verify.toFixed(1)}%로 제출 기준 충족`,
-    `미해결 알림 ${data.alerts}건은 보고서 주석으로 자동 반영`,
+    `측정 면적 ${summary.areaHa} ha, 평균 수위 ${summary.avgWaterLevelCm} cm`,
+    `평균 CH4 플럭스 ${summary.avgMethaneFluxMgM2Hr} mg/m2/h`,
+    `일 감축량 ${summary.dailyReductionTco2e} tCO2eq, 연환산 ${formatter.format(summary.annualReductionTco2e)} tCO2eq`,
+    `잠정 배출권 ${summary.creditEstimate.toLocaleString("ko-KR")} KOC, 자동 검증률 ${summary.verificationRate.toFixed(1)}%`,
   ]
     .map((item) => `<li>${item}</li>`)
     .join("");
-  reportLedger.textContent = data.ledger;
+  reportLedger.textContent = latest.length
+    ? `최신 수신 노드: ${latest.map((item) => `${item.nodeId}(${item.verification})`).join(", ")}`
+    : "아직 수신된 노드 데이터가 없습니다.";
 
-  progressSensor.textContent = `${Math.min(99, 92 + data.nodes / 4).toFixed(0)}%`;
-  progressSensorBar.style.setProperty("--value", `${Math.min(99, 92 + data.nodes / 4)}%`);
-  progressVerify.textContent = `${data.verify.toFixed(0)}%`;
-  progressVerifyBar.style.setProperty("--value", `${data.verify}%`);
+  progressSensor.textContent = `${Math.round((summary.activeNodes / summary.nodeCount) * 100)}%`;
+  progressSensorBar.style.setProperty("--value", `${Math.round((summary.activeNodes / summary.nodeCount) * 100)}%`);
+  progressVerify.textContent = `${summary.verificationRate.toFixed(0)}%`;
+  progressVerifyBar.style.setProperty("--value", `${summary.verificationRate}%`);
 }
 
 function downloadReport() {
-  const data = reportData[regionSelect.value];
+  if (!currentSnapshot) return;
+  const summary = regionSummary(currentSnapshot, regionSelect.value);
+  const latest = latestForRegion(currentSnapshot, summary.regionId);
   const month = monthInput.value || "2026-05";
-  const blob = new Blob([createReportText(data, month)], { type: "text/plain;charset=utf-8" });
+  const blob = new Blob([createReportText(summary, latest, month)], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${data.code}-${month}-MRV-report.txt`;
+  link.download = `${summary.code}-${month}-MRV-report.txt`;
   document.body.appendChild(link);
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
 }
 
+function setupRegionOptions() {
+  regionSelect.innerHTML = Model.REGIONS.map(
+    (region) => `<option value="${region.slug}">${region.title} - ${region.label}</option>`
+  ).join("");
+}
+
+setupRegionOptions();
 generateButton?.addEventListener("click", renderReport);
 regionSelect?.addEventListener("change", renderReport);
 monthInput?.addEventListener("change", renderReport);
 downloadButton?.addEventListener("click", downloadReport);
 printButton?.addEventListener("click", () => window.print());
 
-renderReport();
+Live.subscribe((snapshot) => {
+  currentSnapshot = snapshot;
+  renderReport();
+});

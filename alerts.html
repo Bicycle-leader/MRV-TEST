@@ -3,13 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Alerts | MRV Control Map</title>
+    <title>Alerts | 논토양 메탄 MRV 관제센터</title>
+    <link rel="icon" href="data:," />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
     <header class="topbar">
       <div class="topbar-main">
-        <a class="brand" href="index.html" aria-label="MRV Control Map home">
+        <a class="brand" href="index.html" aria-label="MRV 관제센터 홈">
           <span class="brand-icon" aria-hidden="true">
             <svg viewBox="0 0 40 40" role="img">
               <rect width="40" height="40" rx="10"></rect>
@@ -19,12 +20,12 @@
             </svg>
           </span>
           <span>
-            <strong>전북 권역 MRV 통합 관제센터</strong>
-            <small>MRV Control Map</small>
+            <strong>논토양 메탄 MRV 관제센터</strong>
+            <small>LoRa Water Level · CH4 Reduction</small>
           </span>
         </a>
 
-        <nav class="nav" aria-label="Main navigation">
+        <nav class="nav" aria-label="주요 화면">
           <a href="index.html">Map</a>
           <a href="sensor.html">Sensor Data</a>
           <a class="active" href="alerts.html">Alerts</a>
@@ -36,24 +37,24 @@
     <main class="page-shell">
       <section class="page-heading compact">
         <p class="eyebrow">Alerts</p>
-        <h1>검증 실패, 통신 지연, 현장 조치 알림을 우선순위별로 관리합니다</h1>
+        <h1>검증 실패, 통신 지연, 배터리 저하, 담수 지속 상태를 우선순위별로 관리합니다.</h1>
       </section>
 
       <section class="alert-board" aria-label="Alert summary">
         <article class="alert-summary danger-bg">
           <p>즉시 조치</p>
-          <strong>1건</strong>
-          <em>검증 지연</em>
+          <strong data-alert-immediate>0건</strong>
+          <em>수신 지연·배터리 위험</em>
         </article>
         <article class="alert-summary">
           <p>미해결 알림</p>
-          <strong>4건</strong>
-          <em>전일 대비 -2건</em>
+          <strong data-alert-open>0건</strong>
+          <em>자동 갱신</em>
         </article>
         <article class="alert-summary">
           <p>평균 처리 시간</p>
-          <strong>8분</strong>
-          <em>SLA 정상</em>
+          <strong data-alert-delay>0분</strong>
+          <em>SLA 기준</em>
         </article>
       </section>
 
@@ -64,61 +65,32 @@
               <p class="eyebrow">Action Queue</p>
               <h2>알림 처리 큐</h2>
             </div>
-            <button class="ghost-action" type="button">CSV 내보내기</button>
+            <button class="ghost-action" type="button" onclick="window.print()">인쇄</button>
           </div>
 
-          <div class="alert-list renewed">
-            <article class="alert-item high">
-              <div>
-                <strong>JA-003 검증 해시 재생성 필요</strong>
-                <p>진안 산림 MRV 구역 · 2026. 4. 30. 오전 12:10:42</p>
-              </div>
-              <span>즉시 조치</span>
-            </article>
-            <article class="alert-item medium">
-              <div>
-                <strong>BA-002 통신 지연 7.4초</strong>
-                <p>부안 재생에너지 실증단지 · 2026. 4. 30. 오전 12:08:16</p>
-              </div>
-              <span>자동 재시도</span>
-            </article>
-            <article class="alert-item medium">
-              <div>
-                <strong>IK-004 배터리 29%</strong>
-                <p>익산 제1산단 · 2026. 4. 30. 오전 12:02:55</p>
-              </div>
-              <span>교체 예약</span>
-            </article>
-            <article class="alert-item low">
-              <div>
-                <strong>GC-001 월간 보고서 승인 대기</strong>
-                <p>고창 농업 MRV 단지 · 2026. 4. 29. 오후 11:58:21</p>
-              </div>
-              <span>검토 대기</span>
-            </article>
-          </div>
+          <div class="alert-list renewed" data-alert-list></div>
         </article>
 
         <article class="panel">
           <div class="panel-head">
             <div>
               <p class="eyebrow">Response Playbook</p>
-              <h2>자동 대응 상태</h2>
+              <h2>자동 대응 기준</h2>
             </div>
-            <span class="pill safe">3건 자동 처리</span>
+            <span class="pill safe">실시간 판정</span>
           </div>
           <div class="playbook-list">
             <div>
               <strong>통신 지연</strong>
-              <span>재전송 요청 → 원장 재기록 → 관리자 알림</span>
+              <span>15분 이상 최신 수신이 없으면 게이트웨이와 안테나 상태 점검 대상으로 올립니다.</span>
             </div>
             <div>
               <strong>검증 실패</strong>
-              <span>원본 측정값 비교 → 해시 재생성 → 보고서 제외 표시</span>
+              <span>배터리 20% 미만 또는 RSSI -122 dBm 미만이면 보고서에는 검토 필요로 표시합니다.</span>
             </div>
             <div>
-              <strong>장비 이상</strong>
-              <span>현장 점검 티켓 생성 → 예비 노드 전환</span>
+              <strong>담수 지속</strong>
+              <span>수위 7 cm 이상이면 메탄 배출 저감 물관리 전환 여부를 검토하도록 알립니다.</span>
             </div>
           </div>
         </article>
@@ -130,15 +102,14 @@
             <p class="eyebrow">Regional Risk</p>
             <h2>권역별 알림 집중도</h2>
           </div>
-          <span class="pill warn">진안 집중 관찰</span>
+          <span class="pill warn">자동 산정</span>
         </div>
-        <div class="risk-grid">
-          <div><span>익산</span><i style="--value:42%"></i><strong>2건</strong></div>
-          <div><span>군산</span><i style="--value:24%"></i><strong>1건</strong></div>
-          <div><span>진안</span><i style="--value:78%"></i><strong>4건</strong></div>
-          <div><span>부안</span><i style="--value:56%"></i><strong>3건</strong></div>
-        </div>
+        <div class="risk-grid" data-risk-grid></div>
       </section>
     </main>
+
+    <script src="assets/mrv-model.js"></script>
+    <script src="assets/mrv-live.js"></script>
+    <script src="assets/alerts.js"></script>
   </body>
 </html>

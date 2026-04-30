@@ -3,13 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sensor Data | MRV Control Map</title>
+    <title>Sensor Data | 논토양 메탄 MRV 관제센터</title>
+    <link rel="icon" href="data:," />
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
     <header class="topbar">
       <div class="topbar-main">
-        <a class="brand" href="index.html" aria-label="MRV Control Map home">
+        <a class="brand" href="index.html" aria-label="MRV 관제센터 홈">
           <span class="brand-icon" aria-hidden="true">
             <svg viewBox="0 0 40 40" role="img">
               <rect width="40" height="40" rx="10"></rect>
@@ -19,12 +20,12 @@
             </svg>
           </span>
           <span>
-            <strong>전북 권역 MRV 통합 관제센터</strong>
-            <small>MRV Control Map</small>
+            <strong>논토양 메탄 MRV 관제센터</strong>
+            <small>LoRa Water Level · CH4 Reduction</small>
           </span>
         </a>
 
-        <nav class="nav" aria-label="Main navigation">
+        <nav class="nav" aria-label="주요 화면">
           <a href="index.html">Map</a>
           <a class="active" href="sensor.html">Sensor Data</a>
           <a href="alerts.html">Alerts</a>
@@ -36,29 +37,29 @@
     <main class="page-shell">
       <section class="page-heading">
         <p class="eyebrow">Sensor Data</p>
-        <h1>권역별 측정 노드의 실시간 수집 품질과 탄소 산정 데이터를 확인합니다</h1>
+        <h1>LoRa 수위 노드와 메탄 플럭스 데이터를 서버 저장값 기준으로 실시간 확인합니다.</h1>
       </section>
 
       <section class="stat-strip" aria-label="Sensor overview">
         <article class="stat-card live-card">
-          <p>활성 센서 노드</p>
-          <strong>24<small>개소</small></strong>
-          <em>전체 권역 자동 수집</em>
+          <p>활성 LoRa 노드</p>
+          <strong><span data-active-nodes>0</span><small>개소</small></strong>
+          <em data-last-sync>마지막 수신 대기</em>
         </article>
         <article class="stat-card">
-          <p>평균 전력 측정</p>
-          <strong>45.2<small>kWh</small></strong>
-          <em>최근 10분 집계</em>
+          <p>평균 수위</p>
+          <strong><span data-avg-water>0.0</span><small>cm</small></strong>
+          <em>최신 노드 기준</em>
         </article>
         <article class="stat-card">
-          <p>평균 가스 측정</p>
-          <strong>12.1<small>m³</small></strong>
-          <em>검증 원장 반영</em>
+          <p>평균 CH4 플럭스</p>
+          <strong><span data-avg-methane>0.00</span><small>mg/m2/h</small></strong>
+          <em>수위 기반 추정 또는 직접 측정</em>
         </article>
         <article class="stat-card">
-          <p>데이터 무결성</p>
-          <strong>98.7<small>%</small></strong>
-          <em>해시 검증 통과</em>
+          <p>자동 검증률</p>
+          <strong><span data-quality-rate>0.0</span><small>%</small></strong>
+          <em>배터리·통신 품질 반영</em>
         </article>
       </section>
 
@@ -67,24 +68,18 @@
           <div class="panel-head">
             <div>
               <p class="eyebrow">Live Measurement</p>
-              <h2>수집 신호 및 감축 산정 흐름</h2>
+              <h2>권역별 일 감축량 흐름</h2>
             </div>
-            <span class="pill safe">정상 수집</span>
+            <span class="pill safe">실시간 수신</span>
           </div>
 
-          <div class="signal-board" aria-label="실시간 측정 신호">
+          <div class="signal-board" aria-label="권역별 실시간 감축량">
             <div class="signal-track">
-              <span>익산</span>
+              <span>논토양 노드</span>
               <i></i>
-              <strong>전주 관제</strong>
+              <strong>MRV 서버</strong>
             </div>
-            <div class="measurement-bars" aria-label="권역별 실시간 측정량">
-              <div style="--value:68%"><span>익산</span><b>+0.13</b></div>
-              <div style="--value:58%"><span>군산</span><b>+0.12</b></div>
-              <div style="--value:76%"><span>완주</span><b>+0.15</b></div>
-              <div style="--value:49%"><span>김제</span><b>+0.09</b></div>
-              <div style="--value:63%"><span>부안</span><b>+0.11</b></div>
-            </div>
+            <div class="measurement-bars" data-signal-board aria-label="권역별 감축량 막대"></div>
           </div>
         </article>
 
@@ -95,23 +90,7 @@
               <h2>데이터 품질</h2>
             </div>
           </div>
-          <div class="quality-stack">
-            <div>
-              <span>측정값 수신율</span>
-              <strong>99.2%</strong>
-              <i style="--value:99%"></i>
-            </div>
-            <div>
-              <span>자동 검증 통과</span>
-              <strong>98.7%</strong>
-              <i style="--value:98%"></i>
-            </div>
-            <div>
-              <span>원장 기록 지연</span>
-              <strong>1.8초</strong>
-              <i style="--value:86%"></i>
-            </div>
-          </div>
+          <div class="quality-stack" data-quality-stack></div>
         </article>
       </section>
 
@@ -119,54 +98,27 @@
         <div class="panel-head">
           <div>
             <p class="eyebrow">Node Registry</p>
-            <h2>센서 노드별 최근 측정 데이터</h2>
+            <h2>노드별 최신 측정 데이터</h2>
           </div>
-          <span class="pill safe">블록체인 기록 완료</span>
+          <span class="pill safe">서버 저장값</span>
         </div>
 
         <div class="data-table sensor-table" role="table" aria-label="Sensor node data">
           <div class="data-row head" role="row">
             <span role="columnheader">노드</span>
             <span role="columnheader">권역</span>
-            <span role="columnheader">전력</span>
-            <span role="columnheader">가스</span>
-            <span role="columnheader">감축 산정량</span>
+            <span role="columnheader">수위</span>
+            <span role="columnheader">CH4</span>
+            <span role="columnheader">연환산 감축</span>
             <span role="columnheader">상태</span>
           </div>
-          <div class="data-row" role="row">
-            <strong>IK-001</strong>
-            <span>익산 제1산단</span>
-            <span>45.2 kWh</span>
-            <span>12.1 m³</span>
-            <em>+0.13 tCO₂eq</em>
-            <b class="status-ok">검증됨</b>
-          </div>
-          <div class="data-row" role="row">
-            <strong>GS-002</strong>
-            <span>군산 국가산단</span>
-            <span>43.8 kWh</span>
-            <span>11.9 m³</span>
-            <em>+0.12 tCO₂eq</em>
-            <b class="status-ok">검증됨</b>
-          </div>
-          <div class="data-row" role="row">
-            <strong>WJ-004</strong>
-            <span>완주 수소산업 거점</span>
-            <span>47.4 kWh</span>
-            <span>12.8 m³</span>
-            <em>+0.15 tCO₂eq</em>
-            <b class="status-ok">검증됨</b>
-          </div>
-          <div class="data-row attention" role="row">
-            <strong>JA-003</strong>
-            <span>진안 산림 MRV 구역</span>
-            <span>39.7 kWh</span>
-            <span>10.8 m³</span>
-            <em>+0.08 tCO₂eq</em>
-            <b class="status-watch">재검증</b>
-          </div>
+          <div data-sensor-table></div>
         </div>
       </section>
     </main>
+
+    <script src="assets/mrv-model.js"></script>
+    <script src="assets/mrv-live.js"></script>
+    <script src="assets/sensor.js"></script>
   </body>
 </html>
