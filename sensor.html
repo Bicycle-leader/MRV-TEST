@@ -37,7 +37,23 @@
     <main class="page-shell">
       <section class="page-heading">
         <p class="eyebrow">Sensor Data</p>
-        <h1>LoRa 수위 노드와 메탄 플럭스 데이터를 서버 저장값 기준으로 실시간 확인합니다.</h1>
+        <h1>LoRa·메탄 실시간 확인</h1>
+      </section>
+
+      <section class="panel sensor-region-control" aria-label="권역별 실시간 센서 선택">
+        <div>
+          <p class="eyebrow">Regional Sensor View</p>
+          <h2 data-sensor-region-title>전북 1권역 MRV 관제센터</h2>
+        </div>
+        <label class="sensor-region-select-wrap">
+          <span>관제 권역</span>
+          <select data-sensor-region aria-label="Sensor Data 권역 선택"></select>
+        </label>
+        <div class="sensor-region-summary" aria-live="polite">
+          <span>측정 위치 <strong data-sensor-region-location>익산 왕궁면 논토양 실증 농경지</strong></span>
+          <span>노드 <strong data-sensor-region-nodes>0 / 0</strong></span>
+          <span>마지막 수신 <strong data-sensor-region-sync>대기</strong></span>
+        </div>
       </section>
 
       <section class="stat-strip" aria-label="Sensor overview">
@@ -68,18 +84,18 @@
           <div class="panel-head">
             <div>
               <p class="eyebrow">Live Measurement</p>
-              <h2>권역별 일 감축량 흐름</h2>
+              <h2>선택 권역 노드 흐름</h2>
             </div>
             <span class="pill safe">실시간 수신</span>
           </div>
 
-          <div class="signal-board" aria-label="권역별 실시간 감축량">
+          <div class="signal-board" aria-label="선택 권역 실시간 감축량">
             <div class="signal-track">
               <span>논토양 노드</span>
               <i></i>
               <strong>MRV 서버</strong>
             </div>
-            <div class="measurement-bars" data-signal-board aria-label="권역별 감축량 막대"></div>
+            <div class="measurement-bars" data-signal-board aria-label="노드별 감축량 막대"></div>
           </div>
         </article>
 
@@ -114,6 +130,40 @@
           </div>
           <div data-sensor-table></div>
         </div>
+      </section>
+
+      <section class="split-layout wide-left">
+        <article class="panel api-card" aria-label="LoRa 게이트웨이 수신 API">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Gateway API</p>
+              <h2>게이트웨이 수신 API</h2>
+            </div>
+            <span class="pill safe">POST /api/telemetry</span>
+          </div>
+          <p class="api-note">LoRaWAN 게이트웨이에서 서버로 저장되는 최신 입력 형식입니다.</p>
+          <pre class="code-sample"><code data-api-sample>{}</code></pre>
+        </article>
+
+        <article class="panel" aria-label="실시간 검증 원장">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Ledger</p>
+              <h2>실시간 검증 원장</h2>
+            </div>
+            <span class="pill safe">서버 저장값</span>
+          </div>
+          <div class="ledger-table compact-ledger" role="table" aria-label="MRV realtime ledger">
+            <div class="ledger-row head" role="row">
+              <span role="columnheader">시간</span>
+              <span role="columnheader">노드</span>
+              <span role="columnheader">측정값</span>
+              <span role="columnheader">감축</span>
+              <span role="columnheader">상태</span>
+            </div>
+            <div data-sensor-ledger-body></div>
+          </div>
+        </article>
       </section>
     </main>
 

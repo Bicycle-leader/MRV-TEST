@@ -4,8 +4,8 @@
 
 ## Pages
 
-- `index.html`: 지도 기반 권역별 관제 및 LoRa 수신 API 샘플
-- `sensor.html`: 노드별 수위, CH4 플럭스, 연환산 감축량
+- `index.html`: 지도 기반 권역별 관제
+- `sensor.html`: 노드별 수위, CH4 플럭스, 연환산 감축량, 게이트웨이 API, 검증 원장
 - `alerts.html`: 통신 지연, 배터리, 담수 지속 등 알림 관리
 - `mrv.html`: 서버 저장값 기반 월간 MRV 보고서 자동 작성
 

@@ -37,7 +37,7 @@
     <main class="page-shell">
       <section class="page-heading compact">
         <p class="eyebrow">MRV Report</p>
-        <h1>서버에 저장된 LoRa 측정값을 기반으로 권역별 월간 MRV 보고서를 자동 작성합니다.</h1>
+        <h1>주월간 보고서 자동 작성</h1>
       </section>
 
       <section class="report-builder">
@@ -56,7 +56,7 @@
               <select data-report-region></select>
             </label>
             <label>
-              <span>보고 월</span>
+              <span>보고 기간</span>
               <input data-report-month type="month" value="2026-04" />
             </label>
           </div>
@@ -92,20 +92,42 @@
         <article class="panel report-document" data-report-document>
           <div class="report-paper-head">
             <div>
-              <p class="eyebrow">Generated Report</p>
-              <h2 data-report-title>MRV 월간 보고서</h2>
+              <p class="eyebrow">MRV Report</p>
+              <h2 data-report-title>주월간 보고서</h2>
             </div>
             <span data-report-created>작성 대기</span>
           </div>
 
           <div class="report-body">
-            <h3>1. 보고 개요</h3>
+            <div class="report-meta-grid">
+              <div>
+                <span>보고 기간</span>
+                <strong data-report-period>작성 대기</strong>
+              </div>
+              <div>
+                <span>대상 구역</span>
+                <strong data-report-location>작성 대기</strong>
+              </div>
+              <div>
+                <span>측정 면적</span>
+                <strong data-report-area>작성 대기</strong>
+              </div>
+              <div>
+                <span>작성 기준</span>
+                <strong>서버 저장값</strong>
+              </div>
+            </div>
+
+            <h3>1. 보고 목적 및 범위</h3>
             <p data-report-overview></p>
 
-            <h3>2. 측정 및 검증 결과</h3>
+            <h3>2. 측정 및 검증 요약</h3>
             <ul data-report-findings></ul>
 
-            <h3>3. 저장 원장 및 제출 의견</h3>
+            <h3>3. 산정 결과</h3>
+            <p data-report-calculation></p>
+
+            <h3>4. 저장 원장 및 제출 의견</h3>
             <p data-report-ledger></p>
           </div>
         </article>

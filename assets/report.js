@@ -19,6 +19,10 @@ const reportVerify = document.querySelector("[data-report-verify]");
 const reportReady = document.querySelector("[data-report-ready]");
 const reportOverview = document.querySelector("[data-report-overview]");
 const reportFindings = document.querySelector("[data-report-findings]");
+const reportPeriod = document.querySelector("[data-report-period]");
+const reportLocation = document.querySelector("[data-report-location]");
+const reportArea = document.querySelector("[data-report-area]");
+const reportCalculation = document.querySelector("[data-report-calculation]");
 const reportLedger = document.querySelector("[data-report-ledger]");
 const progressSensor = document.querySelector("[data-progress-sensor]");
 const progressSensorBar = document.querySelector("[data-progress-sensor-bar]");
@@ -42,22 +46,29 @@ function latestForRegion(snapshot, regionId) {
 
 function createReportText(summary, latest, month) {
   return [
-    `${summary.title} MRV 월간 보고서`,
-    `보고 월: ${getMonthLabel(month)}`,
+    `${summary.title} MRV 주월간 보고서`,
+    `보고 기간: ${getMonthLabel(month)}`,
     `대상 구역: ${summary.location}`,
     `측정 면적: ${summary.areaHa} ha`,
+    `자료 기준: 서버 저장 LoRa 수위 및 CH4 플럭스 최신값`,
     `연환산 메탄 감축량: ${formatter.format(summary.annualReductionTco2e)} tCO2eq`,
     `잠정 배출권: ${summary.creditEstimate.toLocaleString("ko-KR")} KOC`,
     `자동 검증률: ${summary.verificationRate.toFixed(1)}%`,
     "",
-    "측정 및 검증 결과",
+    "1. 보고 목적 및 범위",
+    `${summary.location} 권역의 논토양 메탄 감축 활동을 주월간 보고 기준으로 정리하고, 서버에 저장된 LoRa 수위 노드 및 CH4 플럭스 값을 기준으로 산정 결과를 제시합니다.`,
+    "",
+    "2. 측정 및 검증 요약",
     ...latest.map(
       (item) =>
         `- ${item.nodeId}: 수위 ${item.waterLevelCm} cm, CH4 ${item.methaneFluxMgM2Hr} mg/m2/h, ${item.annualReductionTco2e} tCO2eq/년, ${item.verification}`
     ),
     "",
-    "제출 의견",
-    `LoRa 수위 데이터와 선택 입력된 메탄 플럭스 값을 기반으로 산정했습니다. 배출권 제출 전에는 적용 방법론의 기준 배출계수, 보정계수, 검증기관의 품질 기준으로 최종 확정해야 합니다.`,
+    "3. 산정 결과",
+    `일 감축량 ${summary.dailyReductionTco2e} tCO2eq, 연환산 ${formatter.format(summary.annualReductionTco2e)} tCO2eq, 잠정 배출권 ${summary.creditEstimate.toLocaleString("ko-KR")} KOC로 산정되었습니다.`,
+    "",
+    "4. 저장 원장 및 제출 의견",
+    `최신 수신 노드 ${latest.length}건이 보고서에 반영되었습니다. 배출권 제출 전에는 적용 방법론의 기준 배출계수, 보정계수, 검증기관 품질 기준으로 최종 확정해야 합니다.`,
   ].join("\n");
 }
 
@@ -75,8 +86,11 @@ function renderReport() {
     minute: "2-digit",
   });
 
-  reportTitle.textContent = `${summary.title} MRV 월간 보고서`;
+  reportTitle.textContent = `${summary.title} MRV 주월간 보고서`;
   reportCreated.textContent = `자동 작성: ${created}`;
+  reportPeriod.textContent = getMonthLabel(month);
+  reportLocation.textContent = summary.location;
+  reportArea.textContent = `${summary.areaHa} ha`;
   reportCarbon.textContent = `${formatter.format(summary.annualReductionTco2e)} tCO2eq`;
   reportCredit.textContent = `${summary.creditEstimate.toLocaleString("ko-KR")} KOC`;
   reportVerify.textContent = `${summary.verificationRate.toFixed(1)}%`;
@@ -85,17 +99,17 @@ function renderReport() {
   stateBadge.classList.toggle("warn", !ready);
   stateBadge.classList.toggle("safe", ready);
 
-  reportOverview.textContent = `${getMonthLabel(month)} 기준 ${summary.location}의 LoRa 수위 노드 ${summary.activeNodes}/${summary.nodeCount}개가 서버에 저장된 최신 값을 제공했습니다. 산정식은 수위 기반 물관리 계수와 선택 입력된 CH4 플럭스 값을 사용해 일 감축량을 계산하고 연환산했습니다.`;
+  reportOverview.textContent = `${getMonthLabel(month)} 기준 ${summary.location}의 논토양 메탄 감축 활동을 주월간 보고서로 정리했습니다. 본 보고서는 서버에 저장된 LoRa 수위 노드와 CH4 플럭스 최신값을 기준으로 작성되었습니다.`;
   reportFindings.innerHTML = [
-    `측정 면적 ${summary.areaHa} ha, 평균 수위 ${summary.avgWaterLevelCm} cm`,
-    `평균 CH4 플럭스 ${summary.avgMethaneFluxMgM2Hr} mg/m2/h`,
-    `일 감축량 ${summary.dailyReductionTco2e} tCO2eq, 연환산 ${formatter.format(summary.annualReductionTco2e)} tCO2eq`,
-    `잠정 배출권 ${summary.creditEstimate.toLocaleString("ko-KR")} KOC, 자동 검증률 ${summary.verificationRate.toFixed(1)}%`,
+    `수집 노드 ${summary.activeNodes}/${summary.nodeCount}개, 측정 면적 ${summary.areaHa} ha`,
+    `평균 수위 ${summary.avgWaterLevelCm} cm, 평균 CH4 플럭스 ${summary.avgMethaneFluxMgM2Hr} mg/m2/h`,
+    `자동 검증률 ${summary.verificationRate.toFixed(1)}%, 보고서 상태 ${ready ? "제출 가능" : "검토 필요"}`,
   ]
     .map((item) => `<li>${item}</li>`)
     .join("");
+  reportCalculation.textContent = `산정 결과 일 감축량은 ${summary.dailyReductionTco2e} tCO2eq이며, 이를 연환산하면 ${formatter.format(summary.annualReductionTco2e)} tCO2eq입니다. 잠정 배출권은 ${summary.creditEstimate.toLocaleString("ko-KR")} KOC로 계산되었습니다.`;
   reportLedger.textContent = latest.length
-    ? `최신 수신 노드: ${latest.map((item) => `${item.nodeId}(${item.verification})`).join(", ")}`
+    ? `보고서 반영 원장: ${latest.map((item) => `${item.nodeId}(${item.verification})`).join(", ")}. 각 원장은 서버 저장 시각과 측정값을 기준으로 자동 검증되었습니다.`
     : "아직 수신된 노드 데이터가 없습니다.";
 
   progressSensor.textContent = `${Math.round((summary.activeNodes / summary.nodeCount) * 100)}%`;
