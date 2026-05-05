@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Verification | 논토양 메탄 MRV 관제센터</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-main">
+        <a class="brand" href="index.html" aria-label="MRV 관제센터 홈">
+          <span class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 40 40" role="img">
+              <rect width="40" height="40" rx="10"></rect>
+              <path d="M10 26c8.8.3 16-6.4 18.8-15.6C19.2 11.1 12.1 16.3 10 26Z"></path>
+              <path d="M10 27c4.5-6 10.5-9.7 18-11.2"></path>
+              <path d="M9 26c-1.1 3.1-.3 5.7 2.4 7.7"></path>
+            </svg>
+          </span>
+          <span>
+            <strong>논토양 메탄 MRV 관제센터</strong>
+            <small>LoRa Water Level · CH4 Reduction</small>
+          </span>
+        </a>
+
+        <nav class="nav" aria-label="주요 화면">
+          <a href="index.html">Map</a>
+          <a href="sensor.html">Sensor Data</a>
+          <a class="active" href="verification.html">Verification</a>
+          <a href="alerts.html">Alerts</a>
+          <a href="mrv.html">MRV Report</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="page-heading compact">
+        <p class="eyebrow">Verification</p>
+        <h1>검증 절차 진행 대시보드</h1>
+      </section>
+
+      <section class="panel verification-control" aria-label="검증 권역 선택">
+        <div>
+          <p class="eyebrow">Verification Workflow</p>
+          <h2 data-verification-region-title>전북 1권역 MRV 관제센터</h2>
+        </div>
+        <label class="verification-region-select">
+          <span>관제 권역</span>
+          <select data-verification-region aria-label="검증 권역 선택"></select>
+        </label>
+        <div class="verification-current">
+          <span>현재 단계</span>
+          <strong data-verification-current>원자료 수신</strong>
+          <em data-verification-updated>수신 대기</em>
+        </div>
+      </section>
+
+      <section class="stat-strip verification-overview" aria-label="Verification summary">
+        <article class="stat-card live-card">
+          <p>전체 진행률</p>
+          <strong><span data-verify-progress>0</span><small>%</small></strong>
+          <em>7단계 기준</em>
+        </article>
+        <article class="stat-card">
+          <p>통과 단계</p>
+          <strong><span data-verify-passed>0</span><small>단계</small></strong>
+          <em>자동·수동 검증 포함</em>
+        </article>
+        <article class="stat-card">
+          <p>재검토/보류</p>
+          <strong><span data-verify-review>0</span><small>단계</small></strong>
+          <em>품질 확인 필요</em>
+        </article>
+        <article class="stat-card">
+          <p>반려 단계</p>
+          <strong><span data-verify-rejected>0</span><small>단계</small></strong>
+          <em>보고서 반영 차단</em>
+        </article>
+      </section>
+
+      <section class="panel verification-pipeline">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Workflow Steps</p>
+            <h2>검증 절차 진행 상태</h2>
+          </div>
+          <span class="pill safe">실시간 산정</span>
+        </div>
+        <div class="verification-steps" data-verification-steps></div>
+      </section>
+
+      <section class="split-layout verification-layout">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Step Ledger</p>
+              <h2>단계별 검증 원장</h2>
+            </div>
+            <span class="pill warn">상태 추적</span>
+          </div>
+          <div class="verification-table" role="table" aria-label="단계별 검증 상태">
+            <div class="verification-row head" role="row">
+              <span role="columnheader">단계</span>
+              <span role="columnheader">상태</span>
+              <span role="columnheader">기준값</span>
+              <span role="columnheader">진행률</span>
+            </div>
+            <div data-verification-table></div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Status Values</p>
+              <h2>검증 상태값</h2>
+            </div>
+          </div>
+          <div class="status-legend" aria-label="검증 상태값 범례">
+            <span class="verify-status status-wait">대기</span>
+            <span class="verify-status status-running">진행중</span>
+            <span class="verify-status status-pass">통과</span>
+            <span class="verify-status status-hold">보류</span>
+            <span class="verify-status status-reject">반려</span>
+            <span class="verify-status status-review">재검토 필요</span>
+          </div>
+
+          <div class="verification-evidence">
+            <strong>최신 수신 원자료</strong>
+            <div data-verification-evidence></div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script src="assets/mrv-model.js"></script>
+    <script src="assets/mrv-live.js"></script>
+    <script src="assets/verification.js"></script>
+  </body>
+</html>
