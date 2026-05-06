@@ -2044,11 +2044,11 @@ body:not(.map-page) .topbar {
 
 @media (max-width: 900px) {
   :root {
-    --topbar-height: 196px;
+    --topbar-height: 124px;
   }
 
   body:not(.map-page) .topbar {
-    --topbar-height: 126px;
+    --topbar-height: 82px;
   }
 
   .map-page {
@@ -2062,47 +2062,66 @@ body:not(.map-page) .topbar {
   }
 
   .telemetry-strip {
-    min-height: 76px;
-    flex-direction: column;
-    align-items: stretch;
+    grid-area: telemetry;
+    width: 100%;
+    max-width: none;
+    min-height: 38px;
+    flex-direction: row;
+    align-items: center;
     gap: 8px;
-    padding: 10px 16px;
+    padding: 5px 8px;
   }
 
   .telemetry-tabs {
-    width: 100%;
+    width: auto;
+    flex: 0 1 auto;
+    gap: 6px;
   }
 
   .telemetry-flow {
-    flex: 1 1 48px;
-    width: auto;
-    min-width: 44px;
+    flex: 0 1 38px;
+    width: 38px;
+    min-width: 28px;
   }
 
   .live-measurement {
-    width: 100%;
+    width: auto;
+    flex: 1 1 auto;
     justify-content: space-between;
+    min-width: 0;
+    padding: 4px 8px;
   }
 
   .topbar-main {
     min-height: var(--topbar-height);
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand nav"
+      "telemetry telemetry";
+    align-items: center;
+    gap: 8px 10px;
+    padding: 8px 12px;
+  }
+
+  .brand {
+    grid-area: brand;
+  }
+
+  .topbar-actions {
+    grid-area: nav;
+    justify-self: end;
+    max-width: min(54vw, 380px);
   }
 
   .brand strong {
-    font-size: 18px;
+    font-size: 17px;
     white-space: normal;
   }
 
-  .topbar-actions,
   .nav {
-    width: 100%;
-  }
-
-  .nav {
+    width: auto;
+    max-width: 100%;
     overflow-x: auto;
     padding-bottom: 2px;
   }
@@ -2218,15 +2237,49 @@ body:not(.map-page) .topbar {
 
 @media (max-width: 560px) {
   :root {
-    --topbar-height: 206px;
+    --topbar-height: 96px;
   }
 
   body:not(.map-page) .topbar {
-    --topbar-height: 136px;
+    --topbar-height: 72px;
   }
 
   .brand {
-    align-items: flex-start;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand strong {
+    font-size: 15px;
+  }
+
+  .brand small {
+    display: none;
+  }
+
+  .topbar-main {
+    gap: 6px 8px;
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: 7px 10px;
+  }
+
+  .topbar-actions {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .brand > span:not(.brand-icon) {
+    display: none;
+  }
+
+  .telemetry-strip {
+    min-height: 32px;
+    padding: 4px 6px;
+  }
+
+  .telemetry-tabs {
+    display: none;
   }
 
   .telemetry-tab {
@@ -2239,17 +2292,24 @@ body:not(.map-page) .topbar {
   }
 
   .live-measurement b {
-    max-width: 190px;
+    max-width: none;
+    font-size: 12px;
+  }
+
+  .live-measurement small {
+    font-size: 10px;
   }
 
   .brand-icon,
   .brand-icon svg {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
   }
 
   .nav a {
-    padding: 0 10px;
+    min-height: 30px;
+    padding: 0 8px;
+    font-size: 12px;
   }
 
   .measurement-bars div,
